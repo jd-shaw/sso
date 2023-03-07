@@ -1,0 +1,52 @@
+server:
+  port: 8090
+  servlet:
+    context-path: /sso
+sso:
+  server:
+    url: localhost:8090/sso
+  timeout: 7200
+
+
+spring:
+  profiles:
+    active: dev
+  #Caused by: java.lang.ClassNotFoundException: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
+  jpa:
+    hibernate:
+      ddl-auto: none
+      naming:
+        physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+    database: mysql # Specify the DBMS
+    show-sql: true #是否打印 sql 语句
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+  datasource:
+    hikari:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      jdbc-url: jdbc:mysql://127.0.0.1:3306/sso?useSSL=false&useUnicode=true&allowPublicKeyRetrieval=true&characterEncoding=utf-8
+      username: root
+      password: 123456
+  mvc:
+    view:
+      prefix: /
+      suffix: .html
+    hiddenmethod:
+      filter:
+        enabled: true
+  #    static-path-pattern: /static/**
+  web:
+    resources:
+      static-locations: classpath:/static/,classpath:/templates/
+  freemarker:
+    charset: utf-8
+    cache: false
+    suffix: .html
+    content-type: text/html; charset=utf-8
+    template-loader-path: classpath:/templates
+    request-context-attribute: request
+
+# log日志配置
+logging:
+  level:
+    com.shaw.tag: debug
+    org.springframework: warn

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>shaw</title>
+    <script type="text/javascript" src="js/jquery.js"></script>
+    <link href="css/style.css" rel="stylesheet" type="text/css" media="all"/>
+    <script type="text/javascript">
+        var url = window.location.href;
+        if (url.indexOf('/login') == -1) {
+            window.location.href = 'login';
+        }
+    </script>
+</head>
+<body>
+<div class="container">
+    <div class="login-wrapper">
+        <div class="header">shaw SSO 登录</div>
+        <form id="_loginForm" action="login" method="post"
+              validate="true" vmessage="false">
+            <div class="form-wrapper">
+                <input type="hidden" name="redirectUri" value="${redirectUri}"/>
+                <input type="hidden" name="appId" value="${appId}"/>
+                <input type="text" id="_username" name="userName" placeholder="用户名" class="input-item">
+                <input type="password" id="_password" name="password" placeholder="验证码" class="input-item">
+                <div id="_sendSms" class="btn">获取验证码</div>
+                <div id="_loginButton" class="btn">登录</div>
+            </div>
+        </form>
+        <div class="msg">
+            shaw
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    jQuery(function ($) {
+        //验证是否存在错误消息
+        var fail = '${errorMessage!}';
+        if (fail != null && fail != '') {
+            alert(fail);
+        }
+
+        $("#_username").focus();
+
+        $("#_loginButton").click(function () {
+            var username = $('#_username').val(), password = $('#_password').val();
+            if (username && password) {
+                $('#_loginForm').submit();
+            } else {
+                alert("请填写用户名和验证码信息！");
+            }
+        });
+
+        $("#_sendSms").click(function () {
+            var username = $('#_username').val();
+            if (username != null && username != '') {
+                $.post('/sso/get-identifying-code', {loginNameOrPhoneNumber : username}, function (resp) {
+                    if (resp.success) {
+                        alert("验证码发送成功！");
+                    } else {
+                        alert(resp.result);
+                    }
+                });
+            } else {
+                alert("请填写用户名信息！");
+            }
+        });
+
+        // 回车绑定
+        $(".form-data").bind('keypress', function (event) {
+            if (event.keyCode == "13") {
+                event.preventDefault();
+                $("#_loginButton").click();
+            }
+        });
+    });
+</script>
+</body>
+</html>
